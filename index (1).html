@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browser — Smart Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen" class="welcome-screen">
+  <div class="welcome-bg"></div>
+  <div class="welcome-content">
+    <div class="welcome-logo">
+      <span class="logo-icon">◈</span>
+    </div>
+    <h1 class="welcome-title">Browser</h1>
+    <p class="welcome-sub">News · Weather · Search · Music · Stocks · Games</p>
+    <button class="welcome-btn" onclick="enterApp()">
+      <span>Enter</span>
+      <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appShell" class="app-shell hidden">
+
+  <!-- HEADER -->
+  <header class="glass-header" id="mainHeader">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="brand-icon">◈</span>
+        <span class="brand-name">Browser</span>
+      </div>
+
+      <nav class="main-nav" id="mainNav">
+        <button class="nav-btn active" onclick="goToPage('weather')" data-page="weather">
+          <i class="fas fa-cloud-sun"></i><span>Weather</span>
+        </button>
+        <button class="nav-btn" onclick="goToPage('news')" data-page="news">
+          <i class="fas fa-newspaper"></i><span>News</span>
+        </button>
+        <button class="nav-btn" onclick="goToPage('stocks')" data-page="stocks">
+          <i class="fas fa-chart-line"></i><span>Stocks</span>
+        </button>
+        <button class="nav-btn" onclick="goToPage('music')" data-page="music">
+          <i class="fas fa-music"></i><span>Music</span>
+        </button>
+        <button class="nav-btn" onclick="goToPage('search')" data-page="search">
+          <i class="fas fa-search"></i><span>Search</span>
+        </button>
+        <button class="nav-btn" onclick="goToPage('games')" data-page="games">
+          <i class="fas fa-gamepad"></i><span>Games</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="icon-btn" id="settingsBtn" onclick="openSettings()" title="Settings">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE NAV DRAWER -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <button class="nav-btn" onclick="goToPage('weather')" data-page="weather"><i class="fas fa-cloud-sun"></i> Weather</button>
+    <button class="nav-btn" onclick="goToPage('news')" data-page="news"><i class="fas fa-newspaper"></i> News</button>
+    <button class="nav-btn" onclick="goToPage('stocks')" data-page="stocks"><i class="fas fa-chart-line"></i> Stocks</button>
+    <button class="nav-btn" onclick="goToPage('music')" data-page="music"><i class="fas fa-music"></i> Music</button>
+    <button class="nav-btn" onclick="goToPage('search')" data-page="search"><i class="fas fa-search"></i> Search</button>
+    <button class="nav-btn" onclick="goToPage('games')" data-page="games"><i class="fas fa-gamepad"></i> Games</button>
+  </div>
+
+  <!-- PAGES -->
+  <main class="page-container">
+
+    <!-- WEATHER PAGE -->
+    <div class="page active" id="page-weather">
+      <div class="page-hero">
+        <h2 class="page-title">Weather</h2>
+        <p class="page-sub">Real-time forecasts for any city</p>
+      </div>
+      <div class="content-wrap">
+        <div class="glass-card search-card">
+          <div class="input-row">
+            <div class="input-group">
+              <i class="fas fa-map-marker-alt input-icon"></i>
+              <input type="text" id="weatherCity" placeholder="Enter city name..." class="glass-input" />
+            </div>
+            <button class="primary-btn" onclick="getWeather()">Search</button>
+            <button class="secondary-btn" onclick="getWeatherByLocation()">
+              <i class="fas fa-crosshairs"></i> Locate Me
+            </button>
+          </div>
+        </div>
+        <div id="weatherResult"></div>
+        <div id="forecastContainer" class="forecast-grid"></div>
+        <div class="chart-card glass-card" id="weatherChartWrap" style="display:none">
+          <canvas id="weatherChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWS PAGE -->
+    <div class="page" id="page-news">
+      <div class="page-hero">
+        <h2 class="page-title">News</h2>
+        <p class="page-sub">Stay informed with top stories</p>
+      </div>
+      <div class="content-wrap">
+        <div class="glass-card filter-card">
+          <div class="filter-row">
+            <span class="filter-label">Category</span>
+            <div class="filter-pills" id="newsPills">
+              <button class="pill active" onclick="setNewsCategory('')">All</button>
+              <button class="pill" onclick="setNewsCategory('technology')">Tech</button>
+              <button class="pill" onclick="setNewsCategory('sports')">Sports</button>
+              <button class="pill" onclick="setNewsCategory('business')">Business</button>
+              <button class="pill" onclick="setNewsCategory('science')">Science</button>
+            </div>
+          </div>
+        </div>
+        <div id="newsContainer" class="news-grid"></div>
+      </div>
+    </div>
+
+    <!-- STOCKS PAGE -->
+    <div class="page" id="page-stocks">
+      <div class="page-hero">
+        <h2 class="page-title">Stocks</h2>
+        <p class="page-sub">Track the market in real time</p>
+      </div>
+      <div class="content-wrap">
+        <div class="glass-card search-card">
+          <div class="input-row">
+            <div class="input-group">
+              <i class="fas fa-dollar-sign input-icon"></i>
+              <input type="text" id="stockSymbol" placeholder="Symbol: AAPL, TSLA, MSFT..." class="glass-input" />
+            </div>
+            <button class="primary-btn" onclick="getStock()">Get Quote</button>
+          </div>
+        </div>
+        <div id="stockResult"></div>
+        <div class="chart-card glass-card" id="stockChartWrap" style="display:none">
+          <canvas id="stockChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUSIC PAGE -->
+    <div class="page" id="page-music">
+      <div class="page-hero">
+        <h2 class="page-title">Music</h2>
+        <p class="page-sub">Punjabi hits, curated for you</p>
+      </div>
+      <div class="content-wrap">
+        <div class="glass-card music-card">
+          <div class="music-label">
+            <i class="fas fa-headphones"></i>
+            <span>Now Playing — Punjabi Playlist</span>
+          </div>
+          <div class="video-wrap">
+            <iframe width="100%" height="400"
+              src="https://www.youtube.com/embed/videoseries?list=RDXTp5jaRU3Ws"
+              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH PAGE -->
+    <div class="page" id="page-search">
+      <div class="page-hero">
+        <h2 class="page-title">Search</h2>
+        <p class="page-sub">Explore the web with DuckDuckGo</p>
+      </div>
+      <div class="content-wrap">
+        <div class="glass-card search-card big-search">
+          <div class="input-group">
+            <i class="fas fa-search input-icon"></i>
+            <input type="text" id="searchQuery" placeholder="Search anything..." class="glass-input"
+              onkeypress="if(event.key==='Enter') webSearch()" />
+          </div>
+          <button class="primary-btn full-btn" onclick="webSearch()">Search</button>
+        </div>
+        <div id="searchResults" class="search-results"></div>
+      </div>
+    </div>
+
+    <!-- GAMES PAGE -->
+    <div class="page" id="page-games">
+      <div class="page-hero">
+        <h2 class="page-title">Games</h2>
+        <p class="page-sub">Take a break, play something fun</p>
+      </div>
+      <div class="content-wrap">
+        <div class="games-grid">
+          <div class="glass-card game-card" onclick="openGame('https://play2048.co')">
+            <div class="game-icon">🎮</div>
+            <h3>2048</h3>
+            <p>Slide tiles to reach 2048</p>
+            <span class="game-tag">Puzzle</span>
+          </div>
+          <div class="glass-card game-card" onclick="openGame('https://chromedino.com/')">
+            <div class="game-icon">🦖</div>
+            <h3>Dino Run</h3>
+            <p>Jump over obstacles endlessly</p>
+            <span class="game-tag">Arcade</span>
+          </div>
+          <div class="glass-card game-card" onclick="openGame('https://sudoku.com/')">
+            <div class="game-icon">🔢</div>
+            <h3>Sudoku</h3>
+            <p>Number placement challenge</p>
+            <span class="game-tag">Logic</span>
+          </div>
+          <div class="glass-card game-card" onclick="openGame('https://www.chess.com/play/computer')">
+            <div class="game-icon">♟️</div>
+            <h3>Chess</h3>
+            <p>Play against the computer</p>
+            <span class="game-tag">Strategy</span>
+          </div>
+          <div class="glass-card game-card" onclick="openGame('https://wordle.nytimes.com/')">
+            <div class="game-icon">📝</div>
+            <h3>Wordle</h3>
+            <p>Guess the 5-letter word</p>
+            <span class="game-tag">Word</span>
+          </div>
+          <div class="glass-card game-card" onclick="openGame('https://www.coolmathgames.com/')">
+            <div class="game-icon">🧠</div>
+            <h3>Cool Math</h3>
+            <p>Brain games & more</p>
+            <span class="game-tag">Mixed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+<div class="settings-panel glass-card" id="settingsPanel">
+  <div class="settings-header">
+    <h3>Settings</h3>
+    <button class="icon-btn" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="settings-body">
+    <div class="setting-row">
+      <label>Brightness</label>
+      <div class="slider-wrap">
+        <i class="fas fa-sun"></i>
+        <input type="range" id="brightnessControl" min="50" max="150" value="100" oninput="applyBrightness(this.value)" />
+      </div>
+    </div>
+    <div class="setting-row">
+      <label>Font Size</label>
+      <div class="slider-wrap">
+        <i class="fas fa-font"></i>
+        <input type="range" id="fontSizeControl" min="12" max="22" value="16" oninput="applyFontSize(this.value)" />
+      </div>
+    </div>
+    <div class="setting-row">
+      <label>Volume</label>
+      <div class="slider-wrap">
+        <i class="fas fa-volume-up"></i>
+        <input type="range" id="volumeControl" min="0" max="100" value="50" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
