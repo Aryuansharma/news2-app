@@ -50,7 +50,7 @@ Installation
 
 1. Clone the repository:
    
-   git clone https://github.com/YOUR-USERNAME/AS-Browser.git
+   git clone https://github.com/aryuansharma/AS-Browser.git
 
 2. Open the project folder:
    
